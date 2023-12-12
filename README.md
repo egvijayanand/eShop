@@ -24,6 +24,17 @@ dotnet restore eShop.Web.slnf
 ```
 - Install & start Docker Desktop:  https://docs.docker.com/engine/install/
 
+### C# Markup (No XAML) based .NET MAUI Solution
+
+* Navigate to the `src/ClientAppCS` folder
+* Open the `ClientApp.sln` file
+* Either work with the Mock data or Update the API Endpoint in `GlobalSettings.cs` file
+
+#### Changes:
+
+* Have enabled Maps option for the Windows platform also by including [CommunityToolkit.Maui.Maps](https://www.nuget.org/packages/CommunityToolkit.Maui.Maps) NuGet package
+* Replace your Bing Maps key in the `MauiProgram.cs` file to remove the message
+
 ### Running the solution
 
 > [!WARNING]
