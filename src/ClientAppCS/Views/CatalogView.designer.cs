@@ -78,7 +78,7 @@ namespace eShop.ClientApp.Views
                      .Bindv2(ActivityIndicator.IsVisibleProperty, static (CatalogViewModel vm) => vm.IsBusy),
                     new BadgeView()
                     {
-                        BadgeColor = Application.Current?.RequestedTheme switch
+                        /*BadgeColor = Application.Current?.RequestedTheme switch
                         {
                             AppTheme.Dark => AppColor("LightBackgroundColor"),
                             AppTheme.Light or _ => AppColor("DarkBackgroundColor"),
@@ -87,7 +87,7 @@ namespace eShop.ClientApp.Views
                         {
                             AppTheme.Dark => AppColor("LightForegroundColor"),
                             AppTheme.Light or _ => AppColor("DarkForegroundColor"),
-                        },
+                        },*/
                         Content = new Button()
                         {
                             BackgroundColor = AppColor("LightGrayColor"),
@@ -95,6 +95,8 @@ namespace eShop.ClientApp.Views
                         }.Padding(8)
                          .Height(56)
                          .Width(56)
+                         .AppThemeColorBinding(BadgeView.BadgeColorProperty, AppColor("DarkBackgroundColor"), AppColor("LightBackgroundColor"))
+                         .AppThemeColorBinding(BadgeView.TextColorProperty, AppColor("DarkForegroundColor"), AppColor("LightForegroundColor"))
                          .BindCommandv2(static (CatalogViewModel vm) => vm.ViewBasketCommand, BindingMode.OneTime)
                          .DynamicResource(Button.ImageSourceProperty, "BasketIconForTitleImageSource"),
                     }.Margin(16)

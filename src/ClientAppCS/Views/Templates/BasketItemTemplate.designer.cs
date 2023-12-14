@@ -56,16 +56,15 @@ namespace eShop.ClientApp.Views.Templates
             };
             Content = new Grid()
             {
-                BackgroundColor = Application.Current?.RequestedTheme switch
+                /*BackgroundColor = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkBackgroundColor"),
                     AppTheme.Light or _ => AppColor("LightBackgroundColor"),
-                },
+                },*/
 #if (IOS || ANDROID)
                 Padding = Thickness.Zero,
 #endif
 #if WINDOWS
-
                 Padding = new Thickness(12, 0),
 #endif
                 ColumnDefinitions = Columns.Define(Auto,Star),
@@ -147,7 +146,7 @@ namespace eShop.ClientApp.Views.Templates
                      .ColumnSpan(2)
                      .Row(2),
                 }
-            };
+            }.AppThemeColorBinding(Grid.BackgroundColorProperty, AppColor("LightBackgroundColor"), AppColor("DarkBackgroundColor"));
         }
     }
 }
