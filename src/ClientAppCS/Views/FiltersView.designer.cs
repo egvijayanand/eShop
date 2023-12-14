@@ -134,7 +134,7 @@ namespace eShop.ClientApp.Views
                          .AppThemeColorBinding(VerticalStackLayout.BackgroundColorProperty, AppColor("LightBackgroundColor"), AppColor("DarkBackgroundColor")),
                     }.Row(0)
                      .Column(1)
-                     .AppThemeBinding(Border.BackgroundColorProperty, AppResource<Brush>("LightBackgroundColor"), AppResource<Brush>("DarkBackgroundColor")),
+                     .AppThemeBinding(Border.BackgroundProperty, AppResource<Brush>("LightBackgroundColor"), AppResource<Brush>("DarkBackgroundColor")),
                 }
             }.CenterVertical();
         }
