@@ -44,7 +44,7 @@ namespace eShop.ClientApp.Views
                     },
                 },
             });
-            ToolbarItems.Add(new ToolbarItem().BindCommandv2(static (CatalogViewModel vm) => vm.ShowFilterCommand, BindingMode.OneTime)
+            ToolbarItems.Add(new ToolbarItem().BindCommandv2(static (CatalogViewModel vm) => vm.ShowFilterCommand)
              .DynamicResource(ToolbarItem.IconImageSourceProperty, "FilterIconForTitleImageSource"));
             Content = new Grid()
             {
@@ -97,7 +97,7 @@ namespace eShop.ClientApp.Views
                          .Width(56)
                          .AppThemeColorBinding(BadgeView.BadgeColorProperty, AppColor("DarkBackgroundColor"), AppColor("LightBackgroundColor"))
                          .AppThemeColorBinding(BadgeView.TextColorProperty, AppColor("DarkForegroundColor"), AppColor("LightForegroundColor"))
-                         .BindCommandv2(static (CatalogViewModel vm) => vm.ViewBasketCommand, BindingMode.OneTime)
+                         .BindCommandv2(static (CatalogViewModel vm) => vm.ViewBasketCommand)
                          .DynamicResource(Button.ImageSourceProperty, "BasketIconForTitleImageSource"),
                     }.Margin(16)
                      .End().Bottom()

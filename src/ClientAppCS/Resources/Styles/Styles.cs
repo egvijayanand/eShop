@@ -39,38 +39,38 @@ namespace eShop
             {
                 FontAutoScalingEnabled = true,
                 Size = 22,
-                Color = Application.Current?.RequestedTheme switch
+                /*Color = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkFontColor"),
                     AppTheme.Light or _ => AppColor("LightFontColor"),
-                },
+                },*/
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["CatalogIcon"],
-            });
+            }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("MapIconImageSource", new FontImageSource()
             {
                 FontAutoScalingEnabled = true,
                 Size = 22,
-                Color = Application.Current?.RequestedTheme switch
+                /*Color = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkFontColor"),
                     AppTheme.Light or _ => AppColor("LightFontColor"),
-                },
+                },*/
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["MapIcon"],
-            });
+            }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("ProfileIconImageSource", new FontImageSource()
             {
                 FontAutoScalingEnabled = true,
                 Size = 22,
-                Color = Application.Current?.RequestedTheme switch
+                /*Color = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkFontColor"),
                     AppTheme.Light or _ => AppColor("LightFontColor"),
-                },
+                },*/
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["ProfileIcon"],
-            });
+            }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("BasketIconImageSource", new FontImageSource()
             {
                 FontFamily = "FontAwesome-Solid",
@@ -81,12 +81,12 @@ namespace eShop
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["BasketIcon"],
                 Size = 24,
-                Color = Application.Current?.RequestedTheme switch
+                /*Color = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkFontColor"),
                     AppTheme.Light or _ => AppColor("LightFontColor"),
-                },
-            });
+                },*/
+            }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("CampaignIconImageSource", new FontImageSource()
             {
                 FontFamily = "FontAwesome-Solid",
@@ -108,23 +108,23 @@ namespace eShop
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["FilterIcon"],
                 Size = 22,
-                Color = Application.Current?.RequestedTheme switch
+                /*Color = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkFontColor"),
                     AppTheme.Light or _ => AppColor("LightFontColor"),
-                },
-            });
+                },*/
+            }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("SettingsIconForTitleImageSource", new FontImageSource()
             {
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["SettingsIcon"],
                 Size = 22,
-                Color = Application.Current?.RequestedTheme switch
+                /*Color = Application.Current?.RequestedTheme switch
                 {
                     AppTheme.Dark => AppColor("DarkFontColor"),
                     AppTheme.Light or _ => AppColor("LightFontColor"),
-                },
-            });
+                },*/
+            }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("AddIconImageSource", new FontImageSource()
             {
                 FontFamily = "FontAwesome-Solid",

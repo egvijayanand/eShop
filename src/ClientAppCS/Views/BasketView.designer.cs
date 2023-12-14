@@ -60,14 +60,14 @@ namespace eShop.ClientApp.Views
                                         {
                                             Style = (Style)Resources["CartTotalStyle"],
                                             Text = "TOTAL",
-                                            TextColor = Application.Current?.RequestedTheme switch
+                                            /*TextColor = Application.Current?.RequestedTheme switch
                                             {
                                                 AppTheme.Dark => AppColor("DarkFontColor"),
                                                 AppTheme.Light or _ => AppColor("LightFontColor"),
-                                            },
+                                            },*/
                                             HorizontalOptions = LayoutOptions.EndAndExpand,
                                             VerticalOptions = LayoutOptions.CenterAndExpand,
-                                        },
+                                        }.AppThemeColorBinding(Label.TextColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")),
                                         new Label()
                                         {
                                             Style = (Style)Resources["CartTotalStyle"],
