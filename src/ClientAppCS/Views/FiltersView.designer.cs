@@ -19,11 +19,11 @@ namespace eShop.ClientApp.Views
                 {
                     new Border()
                     {
-                        Background = Application.Current?.RequestedTheme switch
+                        /*Background = Application.Current?.RequestedTheme switch
                         {
                             AppTheme.Dark => AppResource<Brush>("DarkBackgroundColor"),
                             AppTheme.Light or _ => AppResource<Brush>("LightBackgroundColor"),
-                        },
+                        },*/
                         StrokeShape = new RoundRectangle()
                         {
                             CornerRadius = 8,
@@ -31,11 +31,11 @@ namespace eShop.ClientApp.Views
                         Content = new VerticalStackLayout()
                         {
                             Spacing = 8,
-                            BackgroundColor = Application.Current?.RequestedTheme switch
+                            /*BackgroundColor = Application.Current?.RequestedTheme switch
                             {
                                 AppTheme.Dark => AppColor("DarkBackgroundColor"),
                                 AppTheme.Light or _ => AppColor("LightBackgroundColor"),
-                            },
+                            },*/
                             Children =
                             {
                                 new Picker()
@@ -130,9 +130,11 @@ namespace eShop.ClientApp.Views
                                      },
                                  })),
                             },
-                        }.Padding(8),
+                        }.Padding(8)
+                         .AppThemeColorBinding(VerticalStackLayout.BackgroundColorProperty, AppColor("LightBackgroundColor"), AppColor("DarkBackgroundColor")),
                     }.Row(0)
-                     .Column(1),
+                     .Column(1)
+                     .AppThemeBinding(Border.BackgroundColorProperty, AppResource<Brush>("LightBackgroundColor"), AppResource<Brush>("DarkBackgroundColor")),
                 }
             }.CenterVertical();
         }
