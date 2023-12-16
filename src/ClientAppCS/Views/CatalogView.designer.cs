@@ -95,13 +95,13 @@ namespace eShop.ClientApp.Views
                         }.Padding(8)
                          .Height(56)
                          .Width(56)
-                         .AppThemeColorBinding(BadgeView.BadgeColorProperty, AppColor("DarkBackgroundColor"), AppColor("LightBackgroundColor"))
-                         .AppThemeColorBinding(BadgeView.TextColorProperty, AppColor("DarkForegroundColor"), AppColor("LightForegroundColor"))
                          .BindCommandv2(static (CatalogViewModel vm) => vm.ViewBasketCommand)
                          .DynamicResource(Button.ImageSourceProperty, "BasketIconForTitleImageSource"),
                     }.Margin(16)
                      .End().Bottom()
                      .Bindv2(BadgeView.TextProperty, static (CatalogViewModel vm) => vm.BadgeCount, BindingMode.OneWay)
+                     .AppThemeColorBinding(BadgeView.BadgeColorProperty, AppColor("DarkBackgroundColor"), AppColor("LightBackgroundColor"))
+                     .AppThemeColorBinding(BadgeView.TextColorProperty, AppColor("DarkForegroundColor"), AppColor("LightForegroundColor"))
                      .Assign(out badge),
                 }
             };
