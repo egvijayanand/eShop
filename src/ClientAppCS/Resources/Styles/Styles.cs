@@ -4,7 +4,7 @@ using CommunityToolkit.Maui.Converters;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Graphics;
 
-namespace eShop
+namespace eShop.ClientApp
 {
     public partial class Styles : ResourceDictionary
     {
@@ -23,7 +23,6 @@ namespace eShop
             Add("CircleIcon", "\xF111");
             Add("ToggleOffIcon", "\xF204");
             Add("ToggleOnIcon", "\xF205");
-
             Add("SettingsIconImageSource", new FontImageSource()
             {
                 FontFamily = "FontAwesome-Solid",
@@ -39,11 +38,6 @@ namespace eShop
             {
                 FontAutoScalingEnabled = true,
                 Size = 22,
-                /*Color = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkFontColor"),
-                    AppTheme.Light or _ => AppColor("LightFontColor"),
-                },*/
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["CatalogIcon"],
             }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
@@ -51,11 +45,6 @@ namespace eShop
             {
                 FontAutoScalingEnabled = true,
                 Size = 22,
-                /*Color = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkFontColor"),
-                    AppTheme.Light or _ => AppColor("LightFontColor"),
-                },*/
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["MapIcon"],
             }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
@@ -63,11 +52,6 @@ namespace eShop
             {
                 FontAutoScalingEnabled = true,
                 Size = 22,
-                /*Color = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkFontColor"),
-                    AppTheme.Light or _ => AppColor("LightFontColor"),
-                },*/
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["ProfileIcon"],
             }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
@@ -81,11 +65,6 @@ namespace eShop
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["BasketIcon"],
                 Size = 24,
-                /*Color = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkFontColor"),
-                    AppTheme.Light or _ => AppColor("LightFontColor"),
-                },*/
             }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("CampaignIconImageSource", new FontImageSource()
             {
@@ -108,22 +87,12 @@ namespace eShop
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["FilterIcon"],
                 Size = 22,
-                /*Color = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkFontColor"),
-                    AppTheme.Light or _ => AppColor("LightFontColor"),
-                },*/
             }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("SettingsIconForTitleImageSource", new FontImageSource()
             {
                 FontFamily = "FontAwesome-Solid",
                 Glyph = (string)this["SettingsIcon"],
                 Size = 22,
-                /*Color = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkFontColor"),
-                    AppTheme.Light or _ => AppColor("LightFontColor"),
-                },*/
             }.AppThemeColorBinding(FontImageSource.ColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")));
             Add("AddIconImageSource", new FontImageSource()
             {
@@ -153,7 +122,6 @@ namespace eShop
                 Glyph = (string)this["ToggleOnIcon"],
                 Color = AppColor("AccentColor"),
             });
-
             Add("BaseButtonFontSize", DeviceInfo.Platform.ToString() switch
             {
                 nameof(DevicePlatform.iOS) => 18d,
@@ -209,10 +177,12 @@ namespace eShop
                 nameof(DevicePlatform.iOS) => FontAttributes.Bold,
                 _ => FontAttributes.None,
             });
-
             Add("CountToBoolConverter", new IntToBoolConverter());
             Add("InverseBoolConverter", new InvertedBoolConverter());
-            Add("ToUpperConverter", new TextCaseConverter() { Type = TextCaseType.Upper });
+            Add("ToUpperConverter", new TextCaseConverter()
+            {
+                Type = TextCaseType.Upper,
+            });
             Add("StringNullOrEmptyBoolConverter", new IsStringNullOrEmptyConverter());
             Add("ItemTappedEventArgsConverter", new ItemTappedEventArgsConverter());
             Add("ListIsNullOrEmptyConverter", new IsListNullOrEmptyConverter());
@@ -222,13 +192,12 @@ namespace eShop
             Add("ItemsToHeightConverter", new ItemsToHeightConverter());
             Add("OrderStatusToStringConverter", new OrderStatusToStringConverter());
             Add("DateTimeFormat", "{0:MMMM dd yyyy}");
-
             Add("ValidationErrorLabelStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.TextColorProperty, Value = AppColor("ErrorColor") },
-                    new() { Property = Label.FontSizeProperty, Value = (double)this["LittleSize"] },
+                    new() { Property = Label.FontSizeProperty, Value = Convert.ToDouble(this["LittleSize"]) },
                 },
             });
             Add("EntryStyle", new Style(typeof(Entry))
@@ -252,7 +221,7 @@ namespace eShop
                 Setters =
                 {
                     new() { Property = Entry.FontFamilyProperty, Value = "PlusJakartaSans-Regular" },
-                    new() { Property = Entry.FontSizeProperty, Value = (double)this["LargeSize"] },
+                    new() { Property = Entry.FontSizeProperty, Value = Convert.ToDouble(this["LargeSize"]) },
                     new() { Property = Entry.HorizontalOptionsProperty, Value = LayoutOptions.FillAndExpand },
                     new() { Property = Entry.FontAttributesProperty, Value = FontAttributes.Bold },
                     new() { Property = Entry.OpacityProperty, Value = 0.6 },
@@ -263,7 +232,7 @@ namespace eShop
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "PlusJakartaSans-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = (double)this["MediumSize"] },
+                    new() { Property = Label.FontSizeProperty, Value = Convert.ToDouble(this["MediumSize"]) },
                 },
             });
             Add("LittleSizeFontStyle", new Style(typeof(Label))
@@ -271,7 +240,7 @@ namespace eShop
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "PlusJakartaSans-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = (double)this["LittleSize"] },
+                    new() { Property = Label.FontSizeProperty, Value = Convert.ToDouble(this["LittleSize"]) },
                 },
             });
             Add("WinUIEntryStyle", new Style(typeof(Entry))
@@ -295,26 +264,25 @@ namespace eShop
                 Setters =
                 {
                     new() { Property = Entry.FontFamilyProperty, Value = "PlusJakartaSans-Regular" },
-                    new() { Property = Entry.TextColorProperty, Value = Application.Current?.RequestedTheme switch { AppTheme.Dark => White, AppTheme.Light or _ => AppResource<Color>("BlackColor") } },
-                    new() { Property = Entry.PlaceholderColorProperty, Value = Application.Current?.RequestedTheme switch { AppTheme.Dark => White, AppTheme.Light or _ => AppResource<Color>("BlackColor") } },
-                    new() { Property = Entry.FontSizeProperty, Value = (double)this["LargeSize"] },
+                    new() { Property = Entry.TextColorProperty, Value = Application.Current?.RequestedTheme switch { AppTheme.Dark => White, AppTheme.Light or _ => AppColor("BlackColor") } },
+                    new() { Property = Entry.PlaceholderColorProperty, Value = Application.Current?.RequestedTheme switch { AppTheme.Dark => White, AppTheme.Light or _ => AppColor("BlackColor") } },
+                    new() { Property = Entry.FontSizeProperty, Value = Convert.ToDouble(this["LargeSize"]) },
                     new() { Property = Entry.HorizontalOptionsProperty, Value = LayoutOptions.FillAndExpand },
                     new() { Property = Entry.FontAttributesProperty, Value = FontAttributes.Bold },
                     new() { Property = Entry.BackgroundColorProperty, Value = Transparent },
                     new() { Property = Entry.OpacityProperty, Value = 0.6 },
                 },
             });
-
             Add(new Style(typeof(Button))
             {
                 ApplyToDerivedTypes = true,
                 CanCascade = true,
                 Setters =
                 {
-                    new() { Property = Button.FontSizeProperty, Value = (double)this["BaseButtonFontSize"] },
+                    new() { Property = Button.FontSizeProperty, Value = Convert.ToDouble(this["BaseButtonFontSize"]) },
                     new() { Property = Button.FontAttributesProperty, Value = (FontAttributes)this["BaseButtonFontAttributes"] },
                     new() { Property = Button.CornerRadiusProperty, Value = (double)this["BaseButtonBorderRadius"] },
-                    new() { Property = Button.BorderWidthProperty, Value = (double)this["BaseButtonBorderWidth"] },
+                    new() { Property = Button.BorderWidthProperty, Value = Convert.ToDouble(this["BaseButtonBorderWidth"]) },
                     new() { Property = Button.BackgroundColorProperty, Value = AppColor("DefaultButtonClassBackgroundColor") },
                     new() { Property = Button.BorderColorProperty, Value = AppColor("DefaultButtonClassBorderColor") },
                     new() { Property = Button.TextColorProperty, Value = AppColor("DefaultButtonClassTextColor") },
@@ -326,7 +294,7 @@ namespace eShop
                 CanCascade = true,
                 Setters =
                 {
-                    new() { Property = Label.FontSizeProperty, Value = (double)this["BaseFontSize"] },
+                    new() { Property = Label.FontSizeProperty, Value = Convert.ToDouble(this["BaseFontSize"]) },
                     new() { Property = Label.TextColorProperty, Value = Application.Current?.RequestedTheme switch { AppTheme.Dark => AppColor("DarkFontColor"), AppTheme.Light or _ => AppColor("LightFontColor") } },
                 },
             });

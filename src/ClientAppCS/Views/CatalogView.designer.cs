@@ -11,6 +11,7 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             Title = "CATALOG";
+            #region Resources
             Resources.Add("FilterLabelStyle", new Style(typeof(Label))
             {
                 Setters =
@@ -33,9 +34,10 @@ namespace eShop.ClientApp.Views
                     },
                 }
             });
+            #endregion
             Triggers.Add(new EventTrigger()
             {
-                Event = "Appearing",
+                Event = nameof(ContentPage.Appearing),
                 Actions =
                 {
                     new BeginAnimation()
@@ -44,19 +46,19 @@ namespace eShop.ClientApp.Views
                     },
                 },
             });
+            #region Toolbar
             ToolbarItems.Add(new ToolbarItem().BindCommandv2(static (CatalogViewModel vm) => vm.ShowFilterCommand)
              .DynamicResource(ToolbarItem.IconImageSourceProperty, "FilterIconForTitleImageSource"));
+            #endregion
             Content = new Grid()
             {
-                ColumnSpacing = 0,
-                RowSpacing = 0,
+                ColumnSpacing = 0d,
+                RowSpacing = 0d,
                 Children =
                 {
-                    new Label()
-                    {
-                        Text = "NO PRODUCTS FOUND",
-                    }.Center()
-                     .Bindv2(Label.IsVisibleProperty, static (CatalogViewModel vm) => vm.Products.Count, converter: (IValueConverter)AppResource("DoesNotHaveCountConverter")),
+                    new Label().Text("NO PRODUCTS FOUND")
+                     .Center()
+                     .Bindv2(Label.IsVisibleProperty, static (CatalogViewModel vm) => vm.Products.Count, converter: AppConverter("DoesNotHaveCountConverter")),
                     new CollectionView()
                     {
                         HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -65,7 +67,7 @@ namespace eShop.ClientApp.Views
                         ItemsLayout = new GridItemsLayout(DeviceInfo.Idiom.ToString() switch { nameof(DeviceIdiom.Desktop) => 4, _ => 2 }, ItemsLayoutOrientation.Vertical),
                         ItemTemplate = new DataTemplate(typeof(ProductTemplate)),
                     }.Bindv2(CollectionView.SelectedItemProperty, static (CatalogViewModel vm) => vm.SelectedProduct, BindingMode.TwoWay)
-                     .Bindv2(CollectionView.IsVisibleProperty, static (CatalogViewModel vm) => vm.Products.Count, converter: (IValueConverter)AppResource("HasCountConverter"))
+                     .Bindv2(CollectionView.IsVisibleProperty, static (CatalogViewModel vm) => vm.Products.Count, converter: AppConverter("HasCountConverter"))
                      .Bindv2(static (CatalogViewModel vm) => vm.Products, BindingMode.OneTime)
                      .Bindv2(CollectionView.SelectionChangedCommandProperty, static (CatalogViewModel vm) => vm.AddCatalogItemCommand)
                      .Bind(CollectionView.SelectionChangedCommandParameterProperty, nameof(CollectionView.SelectedItem), source: RelativeBindingSource.Self)
@@ -78,28 +80,19 @@ namespace eShop.ClientApp.Views
                      .Bindv2(ActivityIndicator.IsVisibleProperty, static (CatalogViewModel vm) => vm.IsBusy),
                     new BadgeView()
                     {
-                        /*BadgeColor = Application.Current?.RequestedTheme switch
-                        {
-                            AppTheme.Dark => AppColor("LightBackgroundColor"),
-                            AppTheme.Light or _ => AppColor("DarkBackgroundColor"),
-                        },
-                        TextColor = Application.Current?.RequestedTheme switch
-                        {
-                            AppTheme.Dark => AppColor("LightForegroundColor"),
-                            AppTheme.Light or _ => AppColor("DarkForegroundColor"),
-                        },*/
                         Content = new Button()
                         {
-                            BackgroundColor = AppColor("LightGrayColor"),
                             CornerRadius = 8,
                         }.Padding(8)
                          .Height(56)
                          .Width(56)
+                         .BackgroundColor(AppColor("LightGrayColor"))
                          .BindCommandv2(static (CatalogViewModel vm) => vm.ViewBasketCommand)
                          .DynamicResource(Button.ImageSourceProperty, "BasketIconForTitleImageSource"),
-                    }.Margin(16)
-                     .End().Bottom()
-                     .Bindv2(BadgeView.TextProperty, static (CatalogViewModel vm) => vm.BadgeCount, BindingMode.OneWay)
+                    }.Bindv2(BadgeView.TextProperty, static (CatalogViewModel vm) => vm.BadgeCount, BindingMode.OneWay)
+                     .Margin(16)
+                     .End()
+                     .Bottom()
                      .AppThemeColorBinding(BadgeView.BadgeColorProperty, AppColor("DarkBackgroundColor"), AppColor("LightBackgroundColor"))
                      .AppThemeColorBinding(BadgeView.TextColorProperty, AppColor("DarkForegroundColor"), AppColor("LightForegroundColor"))
                      .Assign(out badge),

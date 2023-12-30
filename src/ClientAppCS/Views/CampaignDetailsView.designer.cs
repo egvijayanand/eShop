@@ -11,16 +11,17 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             Title = "CAMPAIGN DETAILS";
+            #region Resources
             Resources.Add("CampaignTitleStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MediumSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Start },
                     new() { Property = Label.VerticalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(12, 0) },
-                    new() { Property = Label.TextColorProperty, Value = AppResource<Color>("GreenColor") },
+                    new() { Property = Label.TextColorProperty, Value = AppColor("GreenColor") },
                 },
             });
             Resources.Add("CampaignDescriptionStyle", new Style(typeof(Label))
@@ -28,7 +29,7 @@ namespace eShop.ClientApp.Views
                 BasedOn = (Style)Resources["CampaignTitleStyle"],
                 Setters =
                 {
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LittleSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LittleSize") },
                 },
             });
             Resources.Add("CampaignImageStyle", new Style(typeof(Image))
@@ -45,7 +46,7 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.TextColorProperty, Value = AppResource<Color>("WhiteColor") },
+                    new() { Property = Label.TextColorProperty, Value = AppColor("WhiteColor") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.CenterAndExpand },
                     new() { Property = Label.VerticalOptionsProperty, Value = LayoutOptions.Center },
                 },
@@ -54,21 +55,22 @@ namespace eShop.ClientApp.Views
             {
                 Setters =
                 {
-                    new() { Property = Button.TextColorProperty, Value = AppResource<Color>("WhiteColor") },
-                    new() { Property = Button.BackgroundColorProperty, Value = AppResource<Color>("LightGreenColor") },
+                    new() { Property = Button.TextColorProperty, Value = AppColor("WhiteColor") },
+                    new() { Property = Button.BackgroundColorProperty, Value = AppColor("LightGreenColor") },
                 },
             });
             Resources.Add("CampaignAvailabilityBannerStyle", new Style(typeof(Grid))
             {
                 Setters =
                 {
-                    new() { Property = Grid.BackgroundColorProperty, Value = AppResource<Color>("GrayColor") },
+                    new() { Property = Grid.BackgroundColorProperty, Value = AppColor("GrayColor") },
                     new() { Property = Grid.PaddingProperty, Value = new Thickness(12) },
                     new() { Property = Grid.VerticalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Grid.ColumnSpacingProperty, Value = 0 },
                     new() { Property = Grid.RowSpacingProperty, Value = 0 },
                 },
             });
+            #endregion
             Content = new Grid()
             {
                 RowDefinitions = Rows.Define(Auto,Star,60),
@@ -80,19 +82,19 @@ namespace eShop.ClientApp.Views
                         {
                             new Button()
                             {
-                                BackgroundColor = AppColor("LightGreenColor"),
-                                Text = "VIEW SITE",
                                 Style = (Style)Resources["CampaignViewSiteButtonStyle"],
-                            }.BindCommandv2(static (CampaignDetailsViewModel vm) => vm.EnableDetailsSiteCommand),
+                            }.Text("VIEW SITE")
+                             .BackgroundColor(AppColor("LightGreenColor"))
+                             .BindCommandv2(static (CampaignDetailsViewModel vm) => vm.EnableDetailsSiteCommand),
                         },
                     }.Height(50)
                      .Column(0)
                      .Row(0)
-                     .Bindv2(StackLayout.IsVisibleProperty, static (CampaignDetailsViewModel vm) => vm.Campaign.DetailsUri, converter: (IValueConverter)AppResource("StringNullOrEmptyBoolConverter")),
+                     .Bindv2(StackLayout.IsVisibleProperty, static (CampaignDetailsViewModel vm) => vm.Campaign.DetailsUri, converter: AppConverter("StringNullOrEmptyBoolConverter")),
                     new Grid()
                     {
-                        ColumnSpacing = 0,
-                        RowSpacing = 0,
+                        ColumnSpacing = 0d,
+                        RowSpacing = 0d,
                         RowDefinitions = Rows.Define(Star),
                         Children =
                         {
@@ -115,13 +117,13 @@ namespace eShop.ClientApp.Views
                                                 new Label()
                                                 {
                                                     Style = (Style)Resources["CampaignTitleStyle"],
-                                                }.Row(1)
-                                                 .Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.Name),
+                                                }.Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.Name)
+                                                 .Row(1),
                                                 new Label()
                                                 {
                                                     Style = (Style)Resources["CampaignDescriptionStyle"],
-                                                }.Row(2)
-                                                 .Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.Description),
+                                                }.Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.Description)
+                                                 .Row(2),
                                             },
                                         },
                                     },
@@ -138,13 +140,13 @@ namespace eShop.ClientApp.Views
                             new Label()
                             {
                                 Style = (Style)Resources["CampaignAvailabilityDescriptionStyle"],
-                            }.Row(0)
-                             .Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.From, stringFormat: "From {0:MMMM dd, yyyy}"),
+                            }.Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.From, stringFormat: "From {0:MMMM dd, yyyy}")
+                             .Row(0),
                             new Label()
                             {
                                 Style = (Style)Resources["CampaignAvailabilityDescriptionStyle"],
-                            }.Row(1)
-                             .Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.To, stringFormat: "until {0:MMMM dd, yyyy}"),
+                            }.Bindv2(static (CampaignDetailsViewModel vm) => vm.Campaign.To, stringFormat: "until {0:MMMM dd, yyyy}")
+                             .Row(1),
                         },
                     }.Row(2),
                     new AbsoluteLayout()

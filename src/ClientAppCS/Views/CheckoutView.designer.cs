@@ -11,12 +11,13 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             Title = "CHECKOUT";
+            #region Resources
             Resources.Add("OrderTitleStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MediumSize") },
                     new() { Property = Label.TextColorProperty, Value = Gray },
                 },
             });
@@ -25,7 +26,7 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MediumSize") },
                 },
             });
             Resources.Add("ShippingAddressStyle", new Style(typeof(Label))
@@ -33,7 +34,7 @@ namespace eShop.ClientApp.Views
                 BasedOn = (Style)Resources["OrderTitleStyle"],
                 Setters =
                 {
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargeSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargeSize") },
                 },
             });
             Resources.Add("AddressStyle", new Style(typeof(Label))
@@ -41,7 +42,7 @@ namespace eShop.ClientApp.Views
                 BasedOn = (Style)Resources["OrderContentStyle"],
                 Setters =
                 {
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LittleSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LittleSize") },
                 },
             });
             Resources.Add("OrderTotalStyle", new Style(typeof(Label))
@@ -49,7 +50,7 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargerSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargerSize") },
                 },
             });
             Resources.Add("CheckoutButtonStyle", new Style(typeof(Label))
@@ -62,6 +63,7 @@ namespace eShop.ClientApp.Views
                     new() { Property = Label.VerticalOptionsProperty, Value = LayoutOptions.Center },
                 },
             });
+            #endregion
             Content = new Grid()
             {
                 RowDefinitions = Rows.Define(Auto,Star,60),
@@ -76,56 +78,56 @@ namespace eShop.ClientApp.Views
                             new Label()
                             {
                                 Style = (Style)Resources["OrderTitleStyle"],
-                                Text = "ORDER NUMBER",
-                            }.Row(0)
+                            }.Text("ORDER NUMBER")
+                             .Row(0)
                              .Column(0),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderContentStyle"],
-                            }.Row(1)
-                             .Column(0)
-                             .Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderNumber),
+                            }.Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderNumber)
+                             .Row(1)
+                             .Column(0),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderTitleStyle"],
-                                Text = "TOTAL",
-                            }.Row(3)
+                            }.Text("TOTAL")
+                             .Row(3)
                              .Column(0),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderContentStyle"],
-                            }.Row(4)
-                             .Column(0)
-                             .Bindv2(static (CheckoutViewModel vm) => vm.Order.Total, stringFormat: "${0:N}"),
+                            }.Bindv2(static (CheckoutViewModel vm) => vm.Order.Total, stringFormat: "${0:N}")
+                             .Row(4)
+                             .Column(0),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderTitleStyle"],
-                                Text = "DATE",
-                            }.Row(0)
+                            }.Text("DATE")
+                             .Row(0)
                              .Column(1),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderContentStyle"],
-                            }.Row(1)
-                             .Column(1)
-                             .Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderDate, stringFormat: AppResource<string>("DateTimeFormat")),
+                            }.Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderDate, stringFormat: AppString("DateTimeFormat"))
+                             .Row(1)
+                             .Column(1),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderTitleStyle"],
-                                Text = "STATUS",
-                            }.Row(3)
+                            }.Text("STATUS")
+                             .Row(3)
                              .Column(1),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderContentStyle"],
-                            }.Row(4)
-                             .Column(1)
-                             .Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderStatus, converter: (IValueConverter)AppResource("OrderStatusToStringConverter")),
+                            }.Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderStatus, converter: AppConverter("OrderStatusToStringConverter"))
+                             .Row(4)
+                             .Column(1),
                             new Label()
                             {
                                 Style = (Style)Resources["ShippingAddressStyle"],
-                                Text = "SHIPPING ADDRESS",
-                            }.Row(6)
+                            }.Text("SHIPPING ADDRESS")
+                             .Row(6)
                              .Column(0)
                              .ColumnSpan(2),
                             new VerticalStackLayout()
@@ -166,14 +168,14 @@ namespace eShop.ClientApp.Views
                                 new Label()
                                 {
                                     Style = (Style)Resources["OrderTotalStyle"],
-                                    Text = "TOTAL",
-                                }.Row(0),
+                                }.Text("TOTAL")
+                                 .Row(0),
                                 new Label()
                                 {
                                     Style = (Style)Resources["OrderTotalStyle"],
                                     TextColor = AppColor("GreenColor"),
-                                }.Row(1)
-                                 .Bindv2(static (CheckoutViewModel vm) => vm.Order.Total, stringFormat: "${0:N}"),
+                                }.Bindv2(static (CheckoutViewModel vm) => vm.Order.Total, stringFormat: "${0:N}")
+                                 .Row(1),
                             },
                         }.Row(1)
                          .Padding(8)
@@ -182,9 +184,8 @@ namespace eShop.ClientApp.Views
                      .Bindv2(static (CheckoutViewModel vm) => vm.Order.OrderItems),
                     new Grid()
                     {
-                        BackgroundColor = AppColor("LightGreenColor"),
-                        ColumnSpacing = 0,
-                        RowSpacing = 0,
+                        ColumnSpacing = 0d,
+                        RowSpacing = 0d,
                         GestureRecognizers =
                         {
                             new TapGestureRecognizer()
@@ -197,11 +198,11 @@ namespace eShop.ClientApp.Views
                             new Label()
                             {
                                 Style = (Style)Resources["CheckoutButtonStyle"],
-                                Text = "[ PLACE ORDER ]",
-                            },
+                            }.Text("[ PLACE ORDER ]"),
                         },
                     }.Row(2)
-                     .Padding(0),
+                     .Padding(0)
+                     .BackgroundColor(AppColor("LightGreenColor")),
                     new ActivityIndicator()
                     {
                         Color = AppColor("LightGreenColor"),

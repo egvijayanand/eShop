@@ -21,6 +21,9 @@
 		<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
 		<WindowsPackageType>None</WindowsPackageType>
 
+		<!-- AndExpand options can't be fixed for now -->
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
 		<!-- Display name -->
 		<ApplicationTitle>Northern Mountains</ApplicationTitle>
 
@@ -71,7 +74,6 @@
 		<PackageReference Include="IdentityModel" Version="6.2.0" />
 		<PackageReference Include="PCLCrypto" Version="2.1.40-alpha" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.*" />
-		<PackageReference Include="VijayAnand.MauiToolkit" Version="3.*" />
 		<PackageReference Include="VijayAnand.Toolkit.Markup" Version="3.*" />
 	</ItemGroup>
   

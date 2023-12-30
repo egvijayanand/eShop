@@ -17,6 +17,7 @@ namespace eShop.ClientApp.Views
             Shell.SetNavBarIsVisible(this, false);
             Shell.SetTabBarIsVisible(this, false);
             BackgroundColor = AppColor("LightGrayColor");
+            #region Resources
             Resources.Add("FirstValidationErrorConverter", new FirstValidationErrorConverter());
             Resources.Add("WebNavigatingEventArgsConverter", new WebNavigatingEventArgsConverter());
             Resources.Add("WebNavigatedEventArgsConverter", new WebNavigatedEventArgsConverter());
@@ -26,7 +27,7 @@ namespace eShop.ClientApp.Views
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "PlusJakartaSans-Bold" },
                     new() { Property = Label.FontAttributesProperty, Value = FontAttributes.Bold },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargeSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargeSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(25, 25, 0, 0) },
                 },
@@ -36,7 +37,7 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "PlusJakartaSans-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LittleSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LittleSize") },
                     new() { Property = Label.TextColorProperty, Value = AppColor("TextLightColor") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Start },
                 },
@@ -66,7 +67,7 @@ namespace eShop.ClientApp.Views
                 BasedOn = (Style)Resources["LoginPanelStyle"],
                 Setters =
                 {
-                    new() { Property = Grid.BackgroundColorProperty, Value = AppResource<Color>("GreenColor") },
+                    new() { Property = Grid.BackgroundColorProperty, Value = AppColor("GreenColor") },
                 },
             });
             Resources.Add("SettingsPanelStyle", new Style(typeof(Grid))
@@ -74,7 +75,7 @@ namespace eShop.ClientApp.Views
                 BasedOn = (Style)Resources["LoginPanelStyle"],
                 Setters =
                 {
-                    new() { Property = Grid.BackgroundColorProperty, Value = AppResource<Color>("BlackColor") },
+                    new() { Property = Grid.BackgroundColorProperty, Value = AppColor("BlackColor") },
                 },
             });
             Resources.Add("SettingsImageStyle", new Style(typeof(Image))
@@ -96,12 +97,13 @@ namespace eShop.ClientApp.Views
                     },
                 }
             });
+            #endregion
 #if (IOS || WINDOWS)
             Title = "Northern Mountains";
 #endif
             Triggers.Add(new EventTrigger()
             {
-                Event = "Appearing",
+                Event = nameof(ContentPage.Appearing),
                 Actions =
                 {
                     new BeginAnimation()
@@ -123,8 +125,8 @@ namespace eShop.ClientApp.Views
                      .Top(),
                     new Grid()
                     {
-                        ColumnSpacing = 0,
-                        RowSpacing = 0,
+                        ColumnSpacing = 0d,
+                        RowSpacing = 0d,
                         RowDefinitions = Rows.Define(Auto, Auto, Auto, Star, 60),
                         Children =
                         {
@@ -153,14 +155,11 @@ namespace eShop.ClientApp.Views
                                             new TapGestureRecognizer()
                                             {
                                                 NumberOfTapsRequired = 1,
-                                            }.BindCommand(static (LoginViewModel vm) => vm.SettingsCommand),
+                                            }.BindCommandv2(static (LoginViewModel vm) => vm.SettingsCommand),
                                         },
                                         Children =
                                         {
-                                            new Label()
-                                            {
-                                                Text = "SETTINGS",
-                                            },
+                                            new Label().Text("SETTINGS"),
                                         },
                                     }.Column(2)
                                      .CenterHorizontal(),
@@ -171,7 +170,6 @@ namespace eShop.ClientApp.Views
                             {
                                 HasShadow = false,
                                 CornerRadius = 10,
-                                BackgroundColor = White,
                                 MaximumWidthRequest = 600,
                                 Content = new StackLayout()
                                 {
@@ -179,9 +177,9 @@ namespace eShop.ClientApp.Views
                                     {
                                         new Label()
                                         {
-                                            Text = "Login",
                                             Style = (Style)Resources["TitleLabelStyle"],
-                                        }.Row(1)
+                                        }.Text("Login")
+                                         .Row(1)
                                          .Start(),
                                         new StackLayout()
                                         {
@@ -189,23 +187,22 @@ namespace eShop.ClientApp.Views
                                             {
                                                 new Label()
                                                 {
-                                                    Text = "Username or email",
                                                     Style = (Style)Resources["HeaderLabelStyle"],
-                                                },
+                                                }.Text("Username or email"),
                                                 new Entry()
                                                 {
 #if (IOS || ANDROID)
-                                                    Style = AppResource<Style>("EntryStyle"),
+                                                    Style = AppStyle("EntryStyle"),
 #endif
 #if WINDOWS
-                                                    Style = AppResource<Style>("WinUIEntryStyle"),
+                                                    Style = AppStyle("WinUIEntryStyle"),
 #endif
                                                     Behaviors =
                                                     {
                                                         new EventToCommandBehavior()
                                                         {
                                                             EventName = nameof(Entry.TextChanged),
-                                                        }.BindCommand(static (LoginViewModel vm) => vm.ValidateCommand),
+                                                        }.BindCommandv2(static (LoginViewModel vm) => vm.ValidateCommand),
                                                     },
                                                     Triggers =
                                                     {
@@ -230,24 +227,23 @@ namespace eShop.ClientApp.Views
                                                 }.Bindv2(static (LoginViewModel vm) => vm.UserName.Errors, converter: (IValueConverter)Resources["FirstValidationErrorConverter"]),
                                                 new Label()
                                                 {
-                                                    Text = "Password",
                                                     Style = (Style)Resources["HeaderLabelStyle"],
-                                                },
+                                                }.Text("Password"),
                                                 new Entry()
                                                 {
                                                     IsPassword = true,
 #if (IOS || ANDROID)
-                                                    Style = AppResource<Style>("EntryStyle"),
+                                                    Style = AppStyle("EntryStyle"),
 #endif
 #if WINDOWS
-                                                    Style = AppResource<Style>("WinUIEntryStyle"),
+                                                    Style = AppStyle("WinUIEntryStyle"),
 #endif
                                                     Behaviors =
                                                     {
                                                         new EventToCommandBehavior()
                                                         {
                                                             EventName = nameof(Entry.TextChanged),
-                                                        }.BindCommand(static (LoginViewModel vm) => vm.ValidateCommand),
+                                                        }.BindCommandv2(static (LoginViewModel vm) => vm.ValidateCommand),
                                                     },
                                                     Triggers =
                                                     {
@@ -275,36 +271,36 @@ namespace eShop.ClientApp.Views
                                          .Margin(24),
                                         new Grid()
                                         {
-                                            BackgroundColor = AppColor("BlackColor"),
                                             GestureRecognizers =
                                             {
                                                 new TapGestureRecognizer()
                                                 {
                                                     NumberOfTapsRequired = 1,
-                                                }.BindCommand(static (LoginViewModel vm) => vm.MockSignInCommand),
+                                                }.BindCommandv2(static (LoginViewModel vm) => vm.MockSignInCommand),
                                             },
                                             Children =
                                             {
                                                 new Label()
                                                 {
-                                                    Text = "Login",
                                                     Style = (Style)Resources["LoginButtonStyle"],
-                                                },
+                                                }.Text("Login"),
                                             },
                                         }.Padding(10)
-                                         .Margins(25,0,25,0),
+                                         .Margins(25,0,25,0)
+                                         .BackgroundColor(AppColor("BlackColor")),
                                     },
                                 },
                             }.Row(1)
-                             .Margin(25,100),
+                             .Margin(25,100)
+                             .BackgroundColor(White),
                         },
                     }.Padding(0)
                      .Bindv2(Grid.IsVisibleProperty, static (LoginViewModel vm) => vm.IsMock)
                      .Assign(out LoginPanel),
                     new Grid()
                     {
-                        ColumnSpacing = 0,
-                        RowSpacing = 0,
+                        ColumnSpacing = 0d,
+                        RowSpacing = 0d,
                         RowDefinitions = Rows.Define(Star, 60),
                         ColumnDefinitions = Columns.Define(Star, Star, 64),
                         Children =
@@ -319,11 +315,11 @@ namespace eShop.ClientApp.Views
                              .Assign(out Banner),
                             new Grid()
                             {
-                                BackgroundColor = AppColor("BlackColor"),
                                 Opacity = 0.5f,
                             }.Row(0)
                              .Column(0)
-                             .ColumnSpan(3),
+                             .ColumnSpan(3)
+                             .BackgroundColor(AppColor("BlackColor")),
                             new Grid()
                             {
                                 Style = (Style)Resources["LoginPanelStyle"],
@@ -332,15 +328,14 @@ namespace eShop.ClientApp.Views
                                     new TapGestureRecognizer()
                                     {
                                         NumberOfTapsRequired = 1,
-                                    }.BindCommand(static (LoginViewModel vm) => vm.SignInCommand),
+                                    }.BindCommandv2(static (LoginViewModel vm) => vm.SignInCommand),
                                 },
                                 Children =
                                 {
                                     new Label()
                                     {
-                                        Text = "[ LOGIN ]",
                                         Style = (Style)Resources["LoginButtonStyle"],
-                                    },
+                                    }.Text("[ LOGIN ]"),
                                 },
                             }.Column(0)
                              .Row(1),
@@ -352,15 +347,14 @@ namespace eShop.ClientApp.Views
                                     new TapGestureRecognizer()
                                     {
                                         NumberOfTapsRequired = 1,
-                                    }.BindCommand(static (LoginViewModel vm) => vm.RegisterCommand),
+                                    }.BindCommandv2(static (LoginViewModel vm) => vm.RegisterCommand),
                                 },
                                 Children =
                                 {
                                     new Label()
                                     {
-                                        Text = "[ REGISTER ]",
                                         Style = (Style)Resources["LoginButtonStyle"],
-                                    },
+                                    }.Text("[ REGISTER ]"),
                                 },
                             }.Column(1)
                              .Row(1),
@@ -372,7 +366,7 @@ namespace eShop.ClientApp.Views
                                     new TapGestureRecognizer()
                                     {
                                         NumberOfTapsRequired = 1,
-                                    }.BindCommand(static (LoginViewModel vm) => vm.SettingsCommand),
+                                    }.BindCommandv2(static (LoginViewModel vm) => vm.SettingsCommand),
                                 },
                                 Children =
                                 {
@@ -392,7 +386,7 @@ namespace eShop.ClientApp.Views
                                     {
                                         EventName = nameof(WebView.Navigating),
                                         EventArgsConverter = (WebNavigatingEventArgsConverter)Resources["WebNavigatingEventArgsConverter"],
-                                    }.BindCommand(static (LoginViewModel vm) => vm.NavigateCommand),
+                                    }.BindCommandv2(static (LoginViewModel vm) => vm.NavigateCommand),
                                 },
                             }.Column(0)
                              .ColumnSpan(3)
@@ -401,7 +395,7 @@ namespace eShop.ClientApp.Views
                              .Bindv2(static (LoginViewModel vm) => vm.LoginUrl)
                              .Bindv2(WebView.IsVisibleProperty, static (LoginViewModel vm) => vm.IsLogin),
                         },
-                    }.Bindv2(Grid.IsVisibleProperty, static (LoginViewModel vm) => vm.IsMock, converter: (IValueConverter)AppResource("InverseBoolConverter")),
+                    }.Bindv2(Grid.IsVisibleProperty, static (LoginViewModel vm) => vm.IsMock, converter: AppConverter("InverseBoolConverter")),
                     new ActivityIndicator()
                     {
                         Color = AppColor("BlackColor"),

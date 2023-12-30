@@ -6,12 +6,13 @@ namespace eShop.ClientApp.Views.Templates
     {
         private void InitializeComponent()
         {
+            #region Resources
             Resources.Add("CampaignNameStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargeSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargeSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(0, 12, 0, 6) },
                 },
@@ -35,6 +36,7 @@ namespace eShop.ClientApp.Views.Templates
                     new() { Property = Image.WidthRequestProperty, Value = 24 },
                 },
             });
+            #endregion
             Content = new Grid()
             {
                 RowDefinitions = Rows.Define(250,Auto),
@@ -48,8 +50,8 @@ namespace eShop.ClientApp.Views.Templates
                     new Label()
                     {
                         Style = (Style)Resources["CampaignNameStyle"],
-                    }.Row(1)
-                     .Bind("Name", converter: (IValueConverter)AppResource("ToUpperConverter")),
+                    }.Bind("Name", converter: AppConverter("ToUpperConverter"))
+                     .Row(1),
                 }
             }.Margin(0)
              .Padding(0);

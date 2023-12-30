@@ -10,12 +10,13 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             Title = "CART";
+            #region Resources
             Resources.Add("CartTotalStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargerSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargerSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.End },
                 },
             });
@@ -34,11 +35,12 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MediumSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(0, 12) },
                 },
             });
+            #endregion
             Content = new Grid()
             {
                 RowDefinitions = Rows.Define(Star),
@@ -59,22 +61,17 @@ namespace eShop.ClientApp.Views
                                         new Label()
                                         {
                                             Style = (Style)Resources["CartTotalStyle"],
-                                            Text = "TOTAL",
-                                            /*TextColor = Application.Current?.RequestedTheme switch
-                                            {
-                                                AppTheme.Dark => AppColor("DarkFontColor"),
-                                                AppTheme.Light or _ => AppColor("LightFontColor"),
-                                            },*/
                                             HorizontalOptions = LayoutOptions.EndAndExpand,
                                             VerticalOptions = LayoutOptions.CenterAndExpand,
-                                        }.AppThemeColorBinding(Label.TextColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")),
+                                        }.Text("TOTAL")
+                                         .AppThemeColorBinding(Label.TextColorProperty, AppColor("LightFontColor"), AppColor("DarkFontColor")),
                                         new Label()
                                         {
                                             Style = (Style)Resources["CartTotalStyle"],
                                             TextColor = AppColor("GreenColor"),
                                             VerticalOptions = LayoutOptions.CenterAndExpand,
-                                        }.End()
-                                         .Bindv2(static (BasketViewModel vm) => vm.Total, stringFormat: "${0:N}"),
+                                        }.Bindv2(static (BasketViewModel vm) => vm.Total, stringFormat: "${0:N}")
+                                         .End(),
                                     },
                                 }.Padding(8)
                                  .Row(0),
@@ -84,38 +81,35 @@ namespace eShop.ClientApp.Views
                              .Bind(CollectionView.SelectionChangedCommandParameterProperty, nameof(CollectionView.SelectedItem), source: RelativeBindingSource.Self),
                             new Grid()
                             {
-                                BackgroundColor = AppColor("LightGreenColor"),
-                                ColumnSpacing = 0,
-                                RowSpacing = 0,
+                                ColumnSpacing = 0d,
+                                RowSpacing = 0d,
                                 GestureRecognizers =
                                 {
                                     new TapGestureRecognizer()
                                     {
                                         NumberOfTapsRequired = 1,
-                                    }.BindCommand(static (BasketViewModel vm) => vm.CheckoutCommand),
+                                    }.BindCommandv2(static (BasketViewModel vm) => vm.CheckoutCommand),
                                 },
                                 Children =
                                 {
                                     new Label()
                                     {
                                         Style = (Style)Resources["CheckoutButtonStyle"],
-                                        Text = "[ CHECKOUT ]",
-                                    },
+                                    }.Text("[ CHECKOUT ]"),
                                 },
                             }.Row(1)
-                             .Padding(0),
+                             .Padding(0)
+                             .BackgroundColor(AppColor("LightGreenColor")),
                         },
-                    }.Bindv2(Grid.IsVisibleProperty, static (BasketViewModel vm) => vm.BasketItems.Count, converter: (IValueConverter)AppResource("HasCountConverter")),
+                    }.Bindv2(Grid.IsVisibleProperty, static (BasketViewModel vm) => vm.BasketItems.Count, converter: AppConverter("HasCountConverter")),
                     new Grid()
                     {
                         Children =
                         {
-                            new Label()
-                            {
-                                Text = "EMPTY SHOPPING CART",
-                            }.Center(),
+                            new Label().Text("EMPTY SHOPPING CART")
+                             .Center(),
                         },
-                    }.Bindv2(Grid.IsVisibleProperty, static (BasketViewModel vm) => vm.BasketItems.Count, converter: (IValueConverter)AppResource("DoesNotHaveCountConverter")),
+                    }.Bindv2(Grid.IsVisibleProperty, static (BasketViewModel vm) => vm.BasketItems.Count, converter: AppConverter("DoesNotHaveCountConverter")),
                 }
             };
         }

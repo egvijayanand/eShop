@@ -4,6 +4,7 @@ namespace eShop.ClientApp.Views.Templates
     {
         private void InitializeComponent()
         {
+            #region Resources
             Resources.Add("OrderItemTitleStyle", new Style(typeof(Label))
             {
                 BasedOn = AppStyle("MediumSizeFontStyle"),
@@ -17,7 +18,7 @@ namespace eShop.ClientApp.Views.Templates
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MidMediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MidMediumSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Start },
                 },
             });
@@ -26,7 +27,7 @@ namespace eShop.ClientApp.Views.Templates
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MidMediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MidMediumSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.End },
                 },
             });
@@ -35,11 +36,12 @@ namespace eShop.ClientApp.Views.Templates
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargerSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargerSize") },
                     new() { Property = Label.TextColorProperty, Value = AppColor("GreenColor") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.End },
                 },
             });
+            #endregion
             Content = new Grid()
             {
                 ColumnDefinitions = Columns.Define(Auto,Star),
@@ -64,8 +66,8 @@ namespace eShop.ClientApp.Views.Templates
                             new Label()
                             {
                                 Style = (Style)Resources["OrderItemTitleStyle"],
-                            }.Row(0)
-                             .Bind("ProductName", converter: (IValueConverter)AppResource("ToUpperConverter")),
+                            }.Bind("ProductName", converter: AppConverter("ToUpperConverter"))
+                             .Row(0),
                             new Grid()
                             {
                                 ColumnDefinitions = Columns.Define(Star,Star),
@@ -74,30 +76,28 @@ namespace eShop.ClientApp.Views.Templates
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderItemUnitPriceStyle"],
-                                    }.Column(0)
-                                     .Bind("UnitPrice", stringFormat: "${0:N}"),
+                                    }.Bind("UnitPrice", stringFormat: "${0:N}")
+                                     .Column(0),
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderItemQuantityStyle"],
-                                    }.Column(1)
-                                     .Bind("Quantity"),
+                                    }.Bind("Quantity")
+                                     .Column(1),
                                 },
                             }.Row(1),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderTotalStyle"],
-                            }.Row(2)
-                             .Bind("Total", stringFormat: "${0:N}"),
+                            }.Bind("Total", stringFormat: "${0:N}")
+                             .Row(2),
                         },
                     }.Column(1)
                      .Row(0)
                      .Margin(6),
-                    new Grid()
-                    {
-                        BackgroundColor = AppColor("SeparatorLineColor"),
-                    }.Column(0)
+                    new Grid().Column(0)
                      .ColumnSpan(2)
-                     .Row(1),
+                     .Row(1)
+                     .BackgroundColor(AppColor("SeparatorLineColor")),
                 }
             }.Height(120);
         }

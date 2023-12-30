@@ -9,6 +9,7 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             Title = "MY PROFILE";
+            #region Resources
             Resources.Add("LoginButtonStyle", new Style(typeof(Label))
             {
                 Setters =
@@ -24,14 +25,17 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MediumSize") },
                     new() { Property = Label.HorizontalTextAlignmentProperty, Value = TextAlignment.Center },
                     new() { Property = Label.VerticalTextAlignmentProperty, Value = TextAlignment.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(0,12) },
                 },
             });
-            ToolbarItems.Add(new ToolbarItem().Title("LOGOUT")
-             .BindCommand(static (ProfileViewModel vm) => vm.LogoutCommand));
+            #endregion
+            #region Toolbar
+            ToolbarItems.Add(new ToolbarItem().Text("LOGOUT")
+             .BindCommandv2(static (ProfileViewModel vm) => vm.LogoutCommand));
+            #endregion
             Content = new Grid()
             {
                 RowDefinitions = Rows.Define(Star, Auto),
@@ -41,13 +45,11 @@ namespace eShop.ClientApp.Views
                     {
                         Children =
                         {
-                            new Label()
-                            {
-                                Text = "NO ORDERS",
-                            }.Center()
-                             .Bindv2(Label.IsVisibleProperty, static (ProfileViewModel vm) => vm.Orders.Count, converter: (IValueConverter)AppResource("DoesNotHaveCountConverter")),
+                            new Label().Text("NO ORDERS")
+                             .Center()
+                             .Bindv2(Label.IsVisibleProperty, static (ProfileViewModel vm) => vm.Orders.Count, BindingMode.OneWay, converter: AppConverter("DoesNotHaveCountConverter")),
                         },
-                    }.Bindv2(Grid.IsVisibleProperty, static (ProfileViewModel vm) => vm.IsBusy, converter: (IValueConverter)AppResource("InverseBoolConverter")),
+                    }.Bindv2(Grid.IsVisibleProperty, static (ProfileViewModel vm) => vm.IsBusy, converter: AppConverter("InverseBoolConverter")),
                     new CollectionView()
                     {
                         ItemSizingStrategy = ItemSizingStrategy.MeasureAllItems,
@@ -55,8 +57,7 @@ namespace eShop.ClientApp.Views
                         Header = new Label()
                         {
                             Style = (Style)Resources["MyOrdersLabelStyle"],
-                            Text = "MY ORDERS",
-                        },
+                        }.Text("MY ORDERS"),
                         ItemTemplate = new DataTemplate(typeof(OrderTemplate)),
                     }.Bindv2(CollectionView.SelectedItemProperty, static (ProfileViewModel vm) => vm.SelectedOrder, BindingMode.TwoWay)
                      .Bindv2(static (ProfileViewModel vm) => vm.Orders)

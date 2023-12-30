@@ -12,6 +12,7 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             Title = "CAMPAIGNS";
+            #region Resources
             Resources.Add("CampaignsListStyle", new Style(typeof(ListView))
             {
                 Setters =
@@ -34,9 +35,10 @@ namespace eShop.ClientApp.Views
                     },
                 }
             });
+            #endregion
             Triggers.Add(new EventTrigger()
             {
-                Event = "Appearing",
+                Event = nameof(ContentPage.Appearing),
                 Actions =
                 {
                     new BeginAnimation()
@@ -47,8 +49,8 @@ namespace eShop.ClientApp.Views
             });
             Content = new Grid()
             {
-                ColumnSpacing = 0,
-                RowSpacing = 0,
+                ColumnSpacing = 0d,
+                RowSpacing = 0d,
                 RowDefinitions = Rows.Define(Auto,Star),
                 Children =
                 {
@@ -60,18 +62,16 @@ namespace eShop.ClientApp.Views
                             {
                                 Children =
                                 {
-                                    new Label()
-                                    {
-                                        Text = "NO CAMPAIGNS FOUND",
-                                    }.Center()
-                                     .Bind(Label.IsVisibleProperty, "Campaigns.Count", converter: (IValueConverter)AppResource("DoesNotHaveCountConverter")),
+                                    new Label().Text("NO CAMPAIGNS FOUND")
+                                     .Center()
+                                     .Bindv2(Label.IsVisibleProperty, static (CampaignViewModel vm) => vm.Campaigns.Count, converter: AppConverter("DoesNotHaveCountConverter")),
                                 },
-                            }.Bindv2(Grid.IsVisibleProperty, static (CampaignViewModel vm) => vm.IsBusy, converter: (IValueConverter)AppResource("InverseBoolConverter")),
+                            }.Bindv2(Grid.IsVisibleProperty, static (CampaignViewModel vm) => vm.IsBusy, converter: AppConverter("InverseBoolConverter")),
                             new CollectionView()
                             {
                                 Style = (Style)Resources["CampaignsListStyle"],
                                 ItemTemplate = new DataTemplate(typeof(CampaignTemplate)),
-                            }.Bindv2(CollectionView.IsVisibleProperty, static (CampaignViewModel vm) => vm.Campaigns.Count, converter: (IValueConverter)AppResource("CountToBoolConverter"))
+                            }.Bindv2(CollectionView.IsVisibleProperty, static (CampaignViewModel vm) => vm.Campaigns.Count, converter: AppConverter("CountToBoolConverter"))
                              .Bindv2(static (CampaignViewModel vm) => vm.Campaigns)
                              .Bindv2(CollectionView.SelectionChangedCommandProperty, static (CampaignViewModel vm) => vm.GetCampaignDetailsCommand)
                              .Bind(CollectionView.SelectionChangedCommandParameterProperty, nameof(CollectionView.SelectedItem), source: RelativeBindingSource.Self)
