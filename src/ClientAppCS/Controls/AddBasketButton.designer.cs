@@ -18,7 +18,7 @@ namespace eShop.ClientApp.Controls
             Children.Add(new Image()
             {
                 Aspect = Aspect.AspectFit,
-                Source = AppResource<string>("AddIconLightImageSource"),
+                Source = AppResource<FontImageSource>("AddIconLightImageSource"),
             }.Height(24)
              .Width(24)
              .Center());

@@ -1,6 +1,6 @@
 using Microsoft.Maui.Graphics;
 
-namespace eShop
+namespace eShop.ClientApp
 {
     public partial class AppColors : ResourceDictionary
     {
@@ -29,7 +29,6 @@ namespace eShop
             Add("ListViewBackgroundColor", Transparent);
             Add("ThemeListViewBackgroundColor", Transparent);
             Add("ActivityIndicatorColor", Color.FromArgb("#00857D"));
-
             Add("LightBackgroundColor", Color.FromArgb("#FFFFFF"));
             Add("DarkBackgroundColor", Color.FromArgb("#222222"));
             Add("LightForegroundColor", Color.FromArgb("#222222"));

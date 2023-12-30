@@ -19,43 +19,31 @@ namespace eShop.ClientApp.Views
                 {
                     new Border()
                     {
-                        /*Background = Application.Current?.RequestedTheme switch
-                        {
-                            AppTheme.Dark => AppResource<Brush>("DarkBackgroundColor"),
-                            AppTheme.Light or _ => AppResource<Brush>("LightBackgroundColor"),
-                        },*/
                         StrokeShape = new RoundRectangle()
                         {
                             CornerRadius = 8,
                         },
                         Content = new VerticalStackLayout()
                         {
-                            Spacing = 8,
-                            /*BackgroundColor = Application.Current?.RequestedTheme switch
-                            {
-                                AppTheme.Dark => AppColor("DarkBackgroundColor"),
-                                AppTheme.Light or _ => AppColor("LightBackgroundColor"),
-                            },*/
+                            Spacing = 8d,
                             Children =
                             {
                                 new Picker()
                                 {
                                     Title = "BRAND",
-                                    ItemDisplayBinding = new Binding(nameof(CatalogViewModel.Brand)),
+                                    ItemDisplayBinding = new Binding("Brand"),
                                 }.Bindv2(Picker.ItemsSourceProperty, static (CatalogViewModel vm) => vm.Brands)
                                  .Bindv2(Picker.SelectedItemProperty, static (CatalogViewModel vm) => vm.Brand, BindingMode.TwoWay)
                                  .Invoke(pkr => ios.Picker.SetUpdateMode(pkr, ios.UpdateMode.WhenFinished)),
                                 new Picker()
                                 {
                                     Title = "TYPE",
-                                    ItemDisplayBinding = new Binding(nameof(CatalogViewModel.Type)),
+                                    ItemDisplayBinding = new Binding("Type"),
                                 }.Bindv2(Picker.ItemsSourceProperty, static (CatalogViewModel vm) => vm.Types)
                                  .Bindv2(Picker.SelectedItemProperty, static (CatalogViewModel vm) => vm.Type, BindingMode.TwoWay)
                                  .Invoke(pkr => ios.Picker.SetUpdateMode(pkr, ios.UpdateMode.WhenFinished)),
-                                new Button()
-                                {
-                                    Text = "Apply",
-                                }.BindCommand(static (CatalogViewModel vm) => vm.FilterCommand)
+                                new Button().Text("Apply")
+                                 .BindCommandv2(static (CatalogViewModel vm) => vm.FilterCommand)
                                  .AddVisualState(CreateVisualStateGroupList(new[]
                                  {
                                      new VisualStateGroup()
@@ -90,11 +78,9 @@ namespace eShop.ClientApp.Views
                                          },
                                      },
                                  })),
-                                new Button()
-                                {
-                                    Text = "Clear",
-                                }.Bindv2(Button.IsEnabledProperty, static (CatalogViewModel vm) => vm.IsFilter, BindingMode.OneWay)
-                                 .BindCommand(static (CatalogViewModel vm) => vm.ClearFilterCommand)
+                                new Button().Text("Clear")
+                                 .Bindv2(Button.IsEnabledProperty, static (CatalogViewModel vm) => vm.IsFilter, BindingMode.OneWay)
+                                 .BindCommandv2(static (CatalogViewModel vm) => vm.ClearFilterCommand)
                                  .AddVisualState(CreateVisualStateGroupList(new[]
                                  {
                                      new VisualStateGroup()
@@ -134,7 +120,7 @@ namespace eShop.ClientApp.Views
                          .AppThemeColorBinding(VerticalStackLayout.BackgroundColorProperty, AppColor("LightBackgroundColor"), AppColor("DarkBackgroundColor")),
                     }.Row(0)
                      .Column(1)
-                     .AppThemeBinding(Border.BackgroundProperty, AppResource<Brush>("LightBackgroundColor"), AppResource<Brush>("DarkBackgroundColor")),
+                     .AppThemeBinding(Border.BackgroundProperty, AppBrush("LightBackgroundColor"), AppBrush("DarkBackgroundColor")),
                 }
             }.CenterVertical();
         }

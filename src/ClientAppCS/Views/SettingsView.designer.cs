@@ -16,6 +16,7 @@ namespace eShop.ClientApp.Views
             Shell.SetFlyoutBehavior(this, FlyoutBehavior.Disabled);
             Shell.SetNavBarIsVisible(this, true);
             Shell.SetTabBarIsVisible(this, false);
+            #region Resources
             Resources.Add("DoubleConverter", new DoubleConverter());
             Resources.Add("SettingsStackLayoutStyle", new Style(typeof(StackLayout))
             {
@@ -89,7 +90,7 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LittleSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LittleSize") },
                     new() { Property = Label.TextColorProperty, Value = AppColor("GreenColor") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Start },
                     new() { Property = Label.MarginProperty, Value = new Thickness(12,0) },
@@ -112,6 +113,7 @@ namespace eShop.ClientApp.Views
                     },
                 }
             });
+            #endregion
             Triggers.Add(new EventTrigger()
             {
                 Event = nameof(ContentPage.Appearing),
@@ -151,7 +153,7 @@ namespace eShop.ClientApp.Views
                         UnCheckedImage = AppResource<FontImageSource>("ToggleOffImageSource"),
                     }.Column(1)
                      .Bindv2(ToggleButton.CheckedProperty, static (SettingsViewModel vm) => vm.UseAzureServices, BindingMode.TwoWay)
-                     .BindCommand(static (SettingsViewModel vm) => vm.ToggleMockServicesCommand),
+                     .BindCommandv2(static (SettingsViewModel vm) => vm.ToggleMockServicesCommand),
                     new StackLayout()
                     {
                         Style = (Style)Resources["SettingsStackLayoutStyle"],
@@ -159,9 +161,8 @@ namespace eShop.ClientApp.Views
                         {
                             new Label()
                             {
-                                Text = "Identity Url",
                                 Style = (Style)Resources["HeaderLabelStyle"],
-                            },
+                            }.Text("Identity Url"),
                             new Entry()
                             {
 #if (IOS || ANDROID)
@@ -173,9 +174,8 @@ namespace eShop.ClientApp.Views
                             }.Bindv2(static (SettingsViewModel vm) => vm.IdentityEndpoint, BindingMode.TwoWay),
                             new Label()
                             {
-                                Text = "Gateway Shopping Url",
                                 Style = (Style)Resources["HeaderLabelStyle"],
-                            },
+                            }.Text("Gateway Shopping Url"),
                             new Entry()
                             {
 #if (IOS || ANDROID)
@@ -187,9 +187,8 @@ namespace eShop.ClientApp.Views
                             }.Bindv2(static (SettingsViewModel vm) => vm.GatewayShoppingEndpoint, BindingMode.TwoWay),
                             new Label()
                             {
-                                Text = "Gateway Marketing Url",
                                 Style = (Style)Resources["HeaderLabelStyle"],
-                            },
+                            }.Text("Gateway Marketing Url"),
                             new Entry()
                             {
 #if (IOS || ANDROID)

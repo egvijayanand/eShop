@@ -7,12 +7,13 @@ namespace eShop.ClientApp.Views.Templates
         private void InitializeComponent()
         {
             this.Height(380);
+            #region Resources
             Resources.Add("ProductNameStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargeSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargeSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(0, 12, 0, 6) },
                 },
@@ -23,7 +24,7 @@ namespace eShop.ClientApp.Views.Templates
                 {
                     new() { Property = Label.FontAttributesProperty, Value = FontAttributes.Bold },
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("BigSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("BigSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Center },
                     new() { Property = Label.MarginProperty, Value = new Thickness(0, 6, 0, 12) },
                 },
@@ -47,6 +48,7 @@ namespace eShop.ClientApp.Views.Templates
                     new() { Property = Image.WidthRequestProperty, Value = 24 },
                 },
             });
+            #endregion
             Content = new Grid()
             {
                 RowDefinitions = Rows.Define(250,Auto,Auto),
@@ -71,13 +73,13 @@ namespace eShop.ClientApp.Views.Templates
                     new Label()
                     {
                         Style = (Style)Resources["ProductNameStyle"],
-                    }.Row(1)
-                     .Bind("Name", BindingMode.OneTime, converter: (IValueConverter)AppResource("ToUpperConverter")),
+                    }.Bind("Name", BindingMode.OneTime, converter: AppConverter("ToUpperConverter"))
+                     .Row(1),
                     new Label()
                     {
                         Style = (Style)Resources["ProductPriceStyle"],
-                    }.Row(2)
-                     .Bind("Price", BindingMode.OneTime, stringFormat: "${0:N}"),
+                    }.Bind("Price", BindingMode.OneTime, stringFormat: "${0:N}")
+                     .Row(2),
                 }
             }.Margin(0)
              .Padding(10);

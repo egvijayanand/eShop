@@ -9,12 +9,13 @@ namespace eShop.ClientApp.Views.Templates
         private void InitializeComponent()
         {
             this.Height(88);
+            #region Resources
             Resources.Add("OrderItemUnitPriceStyle", new Style(typeof(Label))
             {
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MidMediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MidMediumSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.Start },
                 },
             });
@@ -23,7 +24,7 @@ namespace eShop.ClientApp.Views.Templates
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("MidMediumSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("MidMediumSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.End },
                 },
             });
@@ -32,7 +33,7 @@ namespace eShop.ClientApp.Views.Templates
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargerSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargerSize") },
                     new() { Property = Label.TextColorProperty, Value = AppColor("GreenColor") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.End },
                 },
@@ -46,21 +47,15 @@ namespace eShop.ClientApp.Views.Templates
                     new() { Property = Label.VerticalOptionsProperty, Value = LayoutOptions.Fill },
                 },
             });
+            #endregion
             RightItems = new SwipeItems()
             {
-                new SwipeItem()
-                {
-                    Text = "Delete",
-                    BackgroundColor = Red,
-                }.BindCommandv2(static (BasketViewModel vm) => vm.DeleteCommand, source: new RelativeBindingSource(typeof(BasketViewModel).IsSubclassOf(typeof(Element)) ? RelativeBindingSourceMode.FindAncestor : RelativeBindingSourceMode.FindAncestorBindingContext, typeof(BasketViewModel)), parameterPath: Binding.SelfPath),
+                new SwipeItem().Text("Delete")
+                 .BackgroundColor(Red)
+                 .BindCommandv2(static (BasketViewModel vm) => vm.DeleteCommand, source: new RelativeBindingSource(RelativeBindingSourceMode.FindAncestorBindingContext, typeof(BasketViewModel)), parameterPath: Binding.SelfPath),
             };
             Content = new Grid()
             {
-                /*BackgroundColor = Application.Current?.RequestedTheme switch
-                {
-                    AppTheme.Dark => AppColor("DarkBackgroundColor"),
-                    AppTheme.Light or _ => AppColor("LightBackgroundColor"),
-                },*/
 #if (IOS || ANDROID)
                 Padding = Thickness.Zero,
 #endif
@@ -86,8 +81,8 @@ namespace eShop.ClientApp.Views.Templates
                         RowDefinitions = Rows.Define(Star,Star,Star),
                         Children =
                         {
-                            new Label().Row(0)
-                             .Bind("ProductName", converter: (IValueConverter)AppResource("ToUpperConverter")),
+                            new Label().Bind("ProductName", converter: AppConverter("ToUpperConverter"))
+                             .Row(0),
                             new Grid()
                             {
                                 ColumnDefinitions = Columns.Define(Star,Star),
@@ -96,20 +91,20 @@ namespace eShop.ClientApp.Views.Templates
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderItemUnitPriceStyle"],
-                                    }.Column(0)
-                                     .Bind("UnitPrice", stringFormat: "${0:N}"),
+                                    }.Bind("UnitPrice", stringFormat: "${0:N}")
+                                     .Column(0),
                                     new Label()
                                     {
                                         Style = (Style)Resources["QuantityStyle"],
-                                    }.Column(1)
-                                     .Bind("Quantity"),
+                                    }.Bind("Quantity")
+                                     .Column(1),
                                 },
                             }.Row(1),
                             new Label()
                             {
                                 Style = (Style)Resources["OrderTotalStyle"],
-                            }.Row(2)
-                             .Bind("Total", stringFormat: "${0:N}"),
+                            }.Bind("Total", stringFormat: "${0:N}")
+                             .Row(2),
                             new Button()
                             {
                                 IsVisible = DeviceInfo.Idiom.ToString() switch
@@ -117,36 +112,34 @@ namespace eShop.ClientApp.Views.Templates
                                     nameof(DeviceIdiom.Desktop) => true,
                                     _ => false,
                                 },
-                                Text = "Delete",
-                            }.Row(2)
+                            }.Text("Delete")
+                             .Row(2)
                              .Start()
-                             .BindCommandv2(static (BasketViewModel vm) => vm.DeleteCommand, source: new RelativeBindingSource(typeof(BasketViewModel).IsSubclassOf(typeof(Element)) ? RelativeBindingSourceMode.FindAncestor : RelativeBindingSourceMode.FindAncestorBindingContext, typeof(BasketViewModel)), parameterPath: Binding.SelfPath),
+                             .BindCommandv2(static (BasketViewModel vm) => vm.DeleteCommand, source: new RelativeBindingSource(RelativeBindingSourceMode.FindAncestorBindingContext, typeof(BasketViewModel)), parameterPath: Binding.SelfPath),
                         },
                     }.Column(1)
                      .Row(0)
                      .Margin(6),
                     new Grid()
                     {
-                        BackgroundColor = Color.FromArgb("#F0AD4E"),
                         Children =
                         {
-                            new Label().Height(60)
+                            new Label().Bind("OldUnitPrice", stringFormat: "Note that the price of this article changed in our Catalog. The old price when you originally added it to the basket was $ {0:N2}")
+                             .Height(60)
                              .Fill()
-                             .TextCenter()
-                             .Bind("OldUnitPrice", stringFormat: "Note that the price of this article changed in our Catalog. The old price when you originally added it to the basket was $ {0:N2}"),
+                             .TextCenter(),
                         },
                     }.Column(0)
                      .ColumnSpan(2)
                      .Row(1)
+                     .BackgroundColor(Color.FromArgb("#F0AD4E"))
                      .Bind(Grid.IsVisibleProperty, "HasNewPrice"),
-                    new Grid()
-                    {
-                        BackgroundColor = Gray,
-                    }.Column(0)
+                    new Grid().Column(0)
                      .ColumnSpan(2)
-                     .Row(2),
+                     .Row(2)
+                     .BackgroundColor(Gray),
                 }
-            }.AppThemeColorBinding(Grid.BackgroundColorProperty, AppColor("LightBackgroundColor"), AppColor("DarkBackgroundColor"));
+            }.BackgroundColor(Application.Current?.RequestedTheme switch { AppTheme.Dark => AppColor("DarkBackgroundColor"), AppTheme.Light or _ => AppColor("LightBackgroundColor") });
         }
     }
 }

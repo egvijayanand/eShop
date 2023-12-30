@@ -8,6 +8,7 @@ namespace eShop.ClientApp
     {
         private void InitializeComponent()
         {
+            #region Resources
             Resources.Add("BaseStyle", new Style(typeof(Element))
             {
                 Setters =
@@ -31,6 +32,7 @@ namespace eShop.ClientApp
             {
                 BasedOn = (Style)Resources["BaseStyle"],
             });
+            #endregion
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior()
             {
                 TextOverride = "",
@@ -55,7 +57,7 @@ namespace eShop.ClientApp
                     {
                         Title = "CATALOG",
                         Route = "Catalog",
-                        Icon = AppResource<ImageSource>("CatalogIconImageSource"),
+                        Icon = AppResource<FontImageSource>("CatalogIconImageSource"),
                         ContentTemplate = new DataTemplate(typeof(CatalogView)),
                     },
                     new ShellContent()
@@ -69,14 +71,14 @@ namespace eShop.ClientApp
                             nameof(DevicePlatform.MacCatalyst) => true,
                             _ => false,
                         },*/
-                        Icon = AppResource<ImageSource>("MapIconImageSource"),
+                        Icon = AppResource<FontImageSource>("MapIconImageSource"),
                         ContentTemplate = new DataTemplate(typeof(MapView)),
                     },
                     new ShellContent()
                     {
                         Title = "PROFILE",
                         Route = "Profile",
-                        Icon = AppResource<ImageSource>("ProfileIconImageSource"),
+                        Icon = AppResource<FontImageSource>("ProfileIconImageSource"),
                         ContentTemplate = new DataTemplate(typeof(ProfileView)),
                     },
                 }

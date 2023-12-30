@@ -13,6 +13,7 @@ namespace eShop.ClientApp.Views
         private void InitializeComponent()
         {
             SetBinding(TitleProperty, new Binding(PropertyName(static (OrderDetailViewModel vm) => vm.Order.OrderNumber), stringFormat: "ORDER {0}"));
+            #region Resources
             Resources.Add("TitleStyle", new Style(typeof(Label))
             {
                 BasedOn = AppStyle("MediumSizeFontStyle"),
@@ -26,7 +27,7 @@ namespace eShop.ClientApp.Views
             {
                 Setters =
                 {
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LittleSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LittleSize") },
                 },
             });
             Resources.Add("OrderTotalStyle", new Style(typeof(Label))
@@ -35,7 +36,7 @@ namespace eShop.ClientApp.Views
                 Setters =
                 {
                     new() { Property = Label.FontFamilyProperty, Value = "Montserrat-Regular" },
-                    new() { Property = Label.FontSizeProperty, Value = AppResource<double>("LargerSize") },
+                    new() { Property = Label.FontSizeProperty, Value = AppDouble("LargerSize") },
                     new() { Property = Label.HorizontalOptionsProperty, Value = LayoutOptions.End },
                 },
             });
@@ -73,6 +74,7 @@ namespace eShop.ClientApp.Views
                     },
                 }
             });
+            #endregion
             Triggers.Add(new EventTrigger()
             {
                 Event = nameof(ContentPage.Appearing),
@@ -100,8 +102,8 @@ namespace eShop.ClientApp.Views
                             new Button()
                             {
                                 Style = (Style)Resources["CancelOrderButtonStyle"],
-                                Text = "CANCEL ORDER",
-                            }.BindCommand(static (OrderDetailViewModel vm) => vm.ToggleCancelOrderCommand),
+                            }.Text("CANCEL ORDER")
+                             .BindCommandv2(static (OrderDetailViewModel vm) => vm.ToggleCancelOrderCommand),
                         },
                     }.Row(0)
                      .Height(50)
@@ -121,56 +123,56 @@ namespace eShop.ClientApp.Views
                                     new Label()
                                     {
                                         Style = (Style)Resources["TitleStyle"],
-                                        Text = "ORDER NUMBER",
-                                    }.Row(0)
+                                    }.Text("ORDER NUMBER")
+                                     .Row(0)
                                      .Column(0),
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderContentStyle"],
-                                    }.Row(1)
-                                     .Column(0)
-                                     .Bindv2(static (OrderDetailViewModel vm) => vm.Order.OrderNumber),
+                                    }.Bindv2(static (OrderDetailViewModel vm) => vm.Order.OrderNumber)
+                                     .Row(1)
+                                     .Column(0),
                                     new Label()
                                     {
                                         Style = (Style)Resources["TitleStyle"],
-                                        Text = "TOTAL",
-                                    }.Row(3)
+                                    }.Text("TOTAL")
+                                     .Row(3)
                                      .Column(0),
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderContentStyle"],
-                                    }.Row(4)
-                                     .Column(0)
-                                     .Bindv2(static (OrderDetailViewModel vm) => vm.Order.Total, stringFormat: "${0:N}"),
+                                    }.Bindv2(static (OrderDetailViewModel vm) => vm.Order.Total, stringFormat: "${0:N}")
+                                     .Row(4)
+                                     .Column(0),
                                     new Label()
                                     {
                                         Style = (Style)Resources["TitleStyle"],
-                                        Text = "DATE",
-                                    }.Row(0)
+                                    }.Text("DATE")
+                                     .Row(0)
                                      .Column(1),
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderContentStyle"],
-                                    }.Row(1)
-                                     .Column(1)
-                                     .Bindv2(static (OrderDetailViewModel vm) => vm.Order.OrderDate, stringFormat: AppResource<string>("DateTimeFormat")),
+                                    }.Bindv2(static (OrderDetailViewModel vm) => vm.Order.OrderDate, stringFormat: AppString("DateTimeFormat"))
+                                     .Row(1)
+                                     .Column(1),
                                     new Label()
                                     {
                                         Style = (Style)Resources["TitleStyle"],
-                                        Text = "STATUS",
-                                    }.Row(3)
+                                    }.Text("STATUS")
+                                     .Row(3)
                                      .Column(1),
                                     new Label()
                                     {
                                         Style = (Style)Resources["OrderContentStyle"],
-                                    }.Row(4)
-                                     .Column(1)
-                                     .Bindv2(static (OrderDetailViewModel vm) => vm.Order.OrderStatus, converter: (IValueConverter)AppResource("OrderStatusToStringConverter")),
+                                    }.Bindv2(static (OrderDetailViewModel vm) => vm.Order.OrderStatus, converter: AppConverter("OrderStatusToStringConverter"))
+                                     .Row(4)
+                                     .Column(1),
                                     new Label()
                                     {
                                         Style = (Style)Resources["TitleStyle"],
-                                        Text = "SHIPPING ADDRESS",
-                                    }.Row(6)
+                                    }.Text("SHIPPING ADDRESS")
+                                     .Row(6)
                                      .Column(0)
                                      .ColumnSpan(2),
                                     new VerticalStackLayout()
@@ -213,8 +215,7 @@ namespace eShop.ClientApp.Views
                                 new Label()
                                 {
                                     Style = (Style)Resources["OrderTotalStyle"],
-                                    Text = "TOTAL",
-                                },
+                                }.Text("TOTAL"),
                                 new Label()
                                 {
                                     Style = (Style)Resources["OrderTotalStyle"],
