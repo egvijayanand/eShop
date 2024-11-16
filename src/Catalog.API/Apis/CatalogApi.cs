@@ -5,28 +5,30 @@ namespace eShop.Catalog.API;
 
 public static class CatalogApi
 {
-    public static IEndpointRouteBuilder MapCatalogApi(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapCatalogApiV1(this IEndpointRouteBuilder app)
     {
+        var api = app.MapGroup("api/catalog").HasApiVersion(1.0);
+
         // Routes for querying catalog items.
-        app.MapGet("/items", GetAllItems);
-        app.MapGet("/items/by", GetItemsByIds);
-        app.MapGet("/items/{id:int}", GetItemById);
-        app.MapGet("/items/by/{name:minlength(1)}", GetItemsByName);
-        app.MapGet("/items/{catalogItemId:int}/pic", GetItemPictureById);
+        api.MapGet("/items", GetAllItems);
+        api.MapGet("/items/by", GetItemsByIds);
+        api.MapGet("/items/{id:int}", GetItemById);
+        api.MapGet("/items/by/{name:minlength(1)}", GetItemsByName);
+        api.MapGet("/items/{catalogItemId:int}/pic", GetItemPictureById);
 
         // Routes for resolving catalog items using AI.
-        app.MapGet("/items/withsemanticrelevance/{text:minlength(1)}",  GetItemsBySemanticRelevance);
+        api.MapGet("/items/withsemanticrelevance/{text:minlength(1)}", GetItemsBySemanticRelevance);
 
         // Routes for resolving catalog items by type and brand.
-        app.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId);
-        app.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId);
-        app.MapGet("/catalogtypes", async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync());
-        app.MapGet("/catalogbrands", async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync());
+        api.MapGet("/items/type/{typeId}/brand/{brandId?}", GetItemsByBrandAndTypeId);
+        api.MapGet("/items/type/all/brand/{brandId:int?}", GetItemsByBrandId);
+        api.MapGet("/catalogtypes", async (CatalogContext context) => await context.CatalogTypes.OrderBy(x => x.Type).ToListAsync());
+        api.MapGet("/catalogbrands", async (CatalogContext context) => await context.CatalogBrands.OrderBy(x => x.Brand).ToListAsync());
 
         // Routes for modifying catalog items.
-        app.MapPut("/items",  UpdateItem);
-        app.MapPost("/items", CreateItem);
-        app.MapDelete("/items/{id:int}", DeleteItemById);
+        api.MapPut("/items", UpdateItem);
+        api.MapPost("/items", CreateItem);
+        api.MapDelete("/items/{id:int}", DeleteItemById);
 
         return app;
     }
@@ -47,8 +49,6 @@ public static class CatalogApi
             .Take(pageSize)
             .ToListAsync();
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
-
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -57,7 +57,6 @@ public static class CatalogApi
         int[] ids)
     {
         var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
-        items = ChangeUriPlaceholder(services.Options.Value, items);
         return TypedResults.Ok(items);
     }
 
@@ -77,7 +76,6 @@ public static class CatalogApi
             return TypedResults.NotFound();
         }
 
-        item.PictureUri = services.Options.Value.PicBaseUrl.Replace("[0]", item.Id.ToString());
         return TypedResults.Ok(item);
     }
 
@@ -98,8 +96,6 @@ public static class CatalogApi
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToListAsync();
-
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
 
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
@@ -132,7 +128,7 @@ public static class CatalogApi
 
         if (!services.CatalogAI.IsEnabled)
         {
-           return await GetItemsByName(paginationRequest, services, text);
+            return await GetItemsByName(paginationRequest, services, text);
         }
 
         // Create an embedding for the input search
@@ -166,8 +162,6 @@ public static class CatalogApi
                 .ToListAsync();
         }
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
-
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -195,7 +189,6 @@ public static class CatalogApi
             .Take(pageSize)
             .ToListAsync();
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -222,7 +215,6 @@ public static class CatalogApi
             .Take(pageSize)
             .ToListAsync();
 
-        itemsOnPage = ChangeUriPlaceholder(services.Options.Value, itemsOnPage);
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
@@ -260,7 +252,7 @@ public static class CatalogApi
         {
             await services.Context.SaveChangesAsync();
         }
-        return TypedResults.Created($"/api/v1/catalog/items/{productToUpdate.Id}");
+        return TypedResults.Created($"/api/catalog/items/{productToUpdate.Id}");
     }
 
     public static async Task<Created> CreateItem(
@@ -275,7 +267,6 @@ public static class CatalogApi
             Description = product.Description,
             Name = product.Name,
             PictureFileName = product.PictureFileName,
-            PictureUri = product.PictureUri,
             Price = product.Price,
             AvailableStock = product.AvailableStock,
             RestockThreshold = product.RestockThreshold,
@@ -286,7 +277,7 @@ public static class CatalogApi
         services.Context.CatalogItems.Add(item);
         await services.Context.SaveChangesAsync();
 
-        return TypedResults.Created($"/api/v1/catalog/items/{item.Id}");
+        return TypedResults.Created($"/api/catalog/items/{item.Id}");
     }
 
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
@@ -303,16 +294,6 @@ public static class CatalogApi
         services.Context.CatalogItems.Remove(item);
         await services.Context.SaveChangesAsync();
         return TypedResults.NoContent();
-    }
-
-    private static List<CatalogItem> ChangeUriPlaceholder(CatalogOptions options, List<CatalogItem> items)
-    {
-        foreach (var item in items)
-        {
-            item.PictureUri = options.PicBaseUrl.Replace("[0]", item.Id.ToString());
-        }
-
-        return items;
     }
 
     private static string GetImageMimeTypeFromImageFileExtension(string extension) => extension switch

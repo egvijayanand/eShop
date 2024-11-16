@@ -5,15 +5,16 @@ using eShop.ClientApp.Services.AppEnvironment;
 using eShop.ClientApp.Services.Location;
 using eShop.ClientApp.Services.Settings;
 using eShop.ClientApp.Services.Theme;
+using Location = eShop.ClientApp.Models.Location.Location;
 
 namespace eShop.ClientApp;
 
 public partial class App : Application
 {
-    private readonly ISettingsService _settingsService;
     private readonly IAppEnvironmentService _appEnvironmentService;
-    private readonly INavigationService _navigationService;
     private readonly ILocationService _locationService;
+    private readonly INavigationService _navigationService;
+    private readonly ISettingsService _settingsService;
     private readonly ITheme _theme;
 
     public App(
@@ -31,10 +32,13 @@ public partial class App : Application
 
         InitApp();
 
-        MainPage = new AppShell(navigationService);
 
+        Current.UserAppTheme = AppTheme.Light;
+    }
 
-        Application.Current.UserAppTheme = AppTheme.Light;
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        return new Window(new AppShell(_navigationService));
     }
 
     private void InitApp()
@@ -58,7 +62,8 @@ public partial class App : Application
         {
             await GetGpsLocation();
         }
-        if (!_settingsService.UseMocks && !string.IsNullOrEmpty(_settingsService.AuthAccessToken))
+
+        if (!_settingsService.UseMocks)
         {
             await SendCurrentLocation();
         }
@@ -83,9 +88,9 @@ public partial class App : Application
         Dispatcher.Dispatch(() => SetStatusBar());
     }
 
-    void SetStatusBar()
+    private void SetStatusBar()
     {
-        var nav = Current.MainPage as NavigationPage;
+        var nav = Windows[0].Page as NavigationPage;
 
         if (Current.RequestedTheme == AppTheme.Dark)
         {
@@ -134,18 +139,18 @@ public partial class App : Application
 
     private async Task SendCurrentLocation()
     {
-        var location = new Models.Location.Location
+        var location = new Location
         {
             Latitude = double.Parse(_settingsService.Latitude, CultureInfo.InvariantCulture),
             Longitude = double.Parse(_settingsService.Longitude, CultureInfo.InvariantCulture)
         };
 
-        await _locationService.UpdateUserLocation(location, _settingsService.AuthAccessToken);
+        await _locationService.UpdateUserLocation(location);
     }
 
     public static void HandleAppActions(AppAction appAction)
     {
-        if (App.Current is not App app)
+        if (Current is not App app)
         {
             return;
         }

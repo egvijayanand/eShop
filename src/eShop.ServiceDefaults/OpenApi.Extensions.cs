@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Scalar.AspNetCore;
 
 namespace eShop.ServiceDefaults;
 
@@ -21,145 +21,63 @@ public static partial class Extensions
             return app;
         }
 
-        app.UseSwagger();
-        app.UseSwaggerUI(setup =>
+        app.MapOpenApi();
+
+        if (app.Environment.IsDevelopment())
         {
-            /// {
-            ///   "OpenApi": {
-            ///     "Endpoint: {
-            ///         "Name": 
-            ///     },
-            ///     "Auth": {
-            ///         "ClientId": ..,
-            ///         "AppName": ..
-            ///     }
-            ///   }
-            /// }
-
-            var pathBase = configuration["PATH_BASE"];
-            var authSection = openApiSection.GetSection("Auth");
-            var endpointSection = openApiSection.GetRequiredSection("Endpoint");
-
-            var swaggerUrl = endpointSection["Url"] ?? $"{(!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty)}/swagger/v1/swagger.json";
-
-            setup.SwaggerEndpoint(swaggerUrl, endpointSection.GetRequiredValue("Name"));
-
-            if (authSection.Exists())
+            app.MapScalarApiReference(options =>
             {
-                setup.OAuthClientId(authSection.GetRequiredValue("ClientId"));
-                setup.OAuthAppName(authSection.GetRequiredValue("AppName"));
-            }
-        });
-
-        // Add a redirect from the root of the app to the swagger endpoint
-        app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+                // Disable default fonts to avoid download unnecessary fonts
+                options.DefaultFonts = false;
+            });
+            app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
+        }
 
         return app;
     }
 
-    public static IHostApplicationBuilder AddDefaultOpenApi(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddDefaultOpenApi(
+        this IHostApplicationBuilder builder,
+        IApiVersioningBuilder? apiVersioning = default)
     {
-        var services = builder.Services;
-        var configuration = builder.Configuration;
+        var openApi = builder.Configuration.GetSection("OpenApi");
+        var identitySection = builder.Configuration.GetSection("Identity");
 
-        var openApi = configuration.GetSection("OpenApi");
+        var scopes = identitySection.Exists()
+            ? identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value)
+            : new Dictionary<string, string?>();
+
 
         if (!openApi.Exists())
         {
             return builder;
         }
 
-        services.AddEndpointsApiExplorer();
-
-        services.AddSwaggerGen(options =>
+        if (apiVersioning is not null)
         {
-            /// {
-            ///   "OpenApi": {
-            ///     "Document": {
-            ///         "Title": ..
-            ///         "Version": ..
-            ///         "Description": ..
-            ///     }
-            ///   }
-            /// }
-            var document = openApi.GetRequiredSection("Document");
-
-            var version = document.GetRequiredValue("Version") ?? "v1";
-
-            options.SwaggerDoc(version, new OpenApiInfo
+            // the default format will just be ApiVersion.ToString(); for example, 1.0.
+            // this will format the version as "'v'major[.minor][-status]"
+            var versioned = apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
+            string[] versions = ["v1"];
+            foreach (var description in versions)
             {
-                Title = document.GetRequiredValue("Title"),
-                Version = version,
-                Description = document.GetRequiredValue("Description")
-            });
-
-            var identitySection = configuration.GetSection("Identity");
-
-            if (!identitySection.Exists())
-            {
-                // No identity section, so no authentication open api definition
-                return;
-            }
-
-            // {
-            //   "Identity": {
-            //     "Url": "http://identity",
-            //     "Scopes": {
-            //         "basket": "Basket API"
-            //      }
-            //    }
-            // }
-
-            var identityUrlExternal = identitySection.GetRequiredValue("Url");
-            var scopes = identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value);
-
-            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows()
+                builder.Services.AddOpenApi(description, options =>
                 {
-                    // TODO: Change this to use Authorization Code flow with PKCE
-                    Implicit = new OpenApiOAuthFlow()
+                    options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
+                    options.ApplyAuthorizationChecks([.. scopes.Keys]);
+                    options.ApplySecuritySchemeDefinitions();
+                    options.ApplyOperationDeprecatedStatus();
+                    // Clear out the default servers so we can fallback to
+                    // whatever ports have been allocated for the service by Aspire
+                    options.AddDocumentTransformer((document, context, cancellationToken) =>
                     {
-                        AuthorizationUrl = new Uri($"{identityUrlExternal}/connect/authorize"),
-                        TokenUrl = new Uri($"{identityUrlExternal}/connect/token"),
-                        Scopes = scopes,
-                    }
-                }
-            });
-
-            options.OperationFilter<AuthorizeCheckOperationFilter>([scopes.Keys.ToArray()]);
-        });
+                        document.Servers = [];
+                        return Task.CompletedTask;
+                    });
+                });
+            }
+        }
 
         return builder;
-    }
-
-    private sealed class AuthorizeCheckOperationFilter(string[] scopes) : IOperationFilter
-    {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            var metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
-
-            if (!metadata.OfType<IAuthorizeData>().Any())
-            {
-                return;
-            }
-
-            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
-            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
-
-            var oAuthScheme = new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
-            };
-
-            operation.Security = new List<OpenApiSecurityRequirement>
-            {
-                new()
-                {
-                    [ oAuthScheme ] = scopes
-                }
-            };
-        }
     }
 }
